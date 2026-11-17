@@ -1,0 +1,113 @@
+\documentclass[12pt, a4paper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% dodatkowe pakiety LaTeX'a
+\usepackage[OT4]{polski}
+\usepackage[utf8]{inputenc}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2cm, right=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[colorlinks=true, linkcolor=blue]{hyperref}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ustawienia globalne
+<<ustawienia_globalne, echo=FALSE, warning=FALSE>>=
+library(knitr)
+library(xtable) #pakiet do tworzenia tabel w formacie LaTeX'a
+opts_chunk$set(fig.path='figure/', fig.align='center', fig.pos='H',fig.width=5, fig.height=4)
+# UWAGA: w razie potrzeby można zmieniać te ustawienia w danym chunk'u!
+@
+
+
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% strona tytulowa
+\title{Sprawozdanie}
+\author{
+    Maja Kołakowska \\ 287360
+    \and
+    Marcin Lasak \\ 272886
+}
+\maketitle
+\tableofcontents
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+<<wczytanie_danych, echo=FALSE, eval=TRUE,warning=FALSE, message=FALSE>>=
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(gridExtra)
+library(GGally)
+library(carData)
+
+data("CES11")
+dane <- CES11 
+dane_aborcja <- group_by(CES11, abortion)
+@
+\subsection{Opis i przygotowanie zbioru danych}
+Celem niniejszego sprawozdania jest badanie zbioru danych będącym wynikiem ankiety dotyczącej podejśćia do aborcji przeprowadzonej w 2011 roku w Kanadzie. Została ona przeprowadzona w ramach Canadian National Election Study przeprowadzanego przy każdych kanadyjskich wyborach przez Institute for Social Research z York University. Zbiór składa się z trzech cech ilościowych i sześciu jakościowych. Zawiera \Sexpr{nrow(dane_aborcja)} obserwacje. Na wstępie usuwamy cechę id, ponieważ nie niesie ona żadnej istotnej infromacji dla naszej analizy. Zbiór danych nie zawiera danych brakujących.
+<<przygotowanie danych, echo=FALSE, eval=TRUE,warning=FALSE, message=FALSE>>=
+ 
+dane_aborcja$id <- NULL
+@
+
+<<tabela_opis, echo=FALSE, results='asis'>>=
+library(xtable)
+
+opis <- data.frame(
+  Zmienna = c("Province", "Population", "Weight", "Gender", "Abortion", 
+              "Importance", "Education", "Urban"),
+  Rodzaj = c("nominalna", "przedziałowa dyskretna", "przedziałowa ciągła",    "nominalna", "nominalna","porządkowa","porządkowa","nominalna"),
+  Opis = c(
+    "Prowincja Kanady",
+    "Liczba mieszkańców prowincji respondenta w wieku powyżej 17 lat",
+    "Waga dopasowująca próbę do wielkości populacji. Uwzględnia nierówne     prawdopodobieństwa wylosowania w zależności od prowincji i wielkości gospodarstwa domowego.",
+    "Płeć",
+    "Stosunek do aborcji, czynnik o poziomach No (nie), Yes (tak). Odpowiedź na pytanie: 'Czy aborcja powinna zostać zakazana?'",
+    "znaczenie religii, czynnik o poziomach (alfabetycznie) not (nieważna), notvery (niezbyt ważna), somewhat (dość ważna), very (bardzo ważna). Odpowiedź na pytanie: 'Czy powiedział(a)by Pan/Pani, że religia jest w Pana/Pani życiu bardzo ważna, dość ważna, niezbyt ważna czy zupełnie nieważna?'",
+    "Wykształcenie, czynnik o poziomach (alfabetycznie):
+bachelors - licencjat,
+college - college lokalny (community college) lub szkoła techniczna,
+higher - wykształcenie podyplomowe, czyli magisterium lub wyżej,
+HS - ukończona szkoła średnia,
+lessHS - wykształcenie niższe niż średnie,
+somePS - rozpoczęte, ale nieukończone studia lub inna edukacja policealna",
+    "Miejsce zamieszkania, czynnik o poziomach rural (wieś), urban (miasto)"
+  )
+)
+
+tab <- xtable(opis,
+              caption = "Opis zmiennych w zbiorze danych",
+              align = c("l", "l", "l", ">{\\raggedright\\arraybackslash}p{0.6\\textwidth}"))
+
+print(tab,
+      include.rownames = FALSE,
+      booktabs = TRUE,
+      table.placement = "H",
+      sanitize.text.function = function(x) gsub("\n", " \\\\newline ", x))
+@
+
+\subsection{Lista 2}
+
+\subsubsection{Zadanie 1}
+
+\subsection{Podsumowanie }
+
+
+
+
+\end{document}
